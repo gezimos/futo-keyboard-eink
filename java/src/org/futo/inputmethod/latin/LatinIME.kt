@@ -90,7 +90,7 @@ import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.applyWindowColors
 import org.futo.inputmethod.latin.uix.theme.getThemeOption
 import org.futo.inputmethod.latin.uix.theme.orDefault
-import org.futo.inputmethod.latin.uix.theme.presets.DefaultDarkScheme
+import org.futo.inputmethod.latin.uix.theme.presets.Mono
 import org.futo.inputmethod.latin.utils.JniUtils
 import org.futo.inputmethod.updates.scheduleUpdateCheckingJob
 import org.futo.inputmethod.v2keyboard.ComputedKeyboardSize
@@ -205,7 +205,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     val sizingCalculator = KeyboardSizingCalculator(this, uixManager)
 
     private var activeThemeOption: ThemeOption? = null
-    private val activeColorScheme = mutableStateOf(DefaultDarkScheme.obtainColors(this))
+    private val activeColorScheme = mutableStateOf(Mono.obtainColors(this))
     private var pendingRecreateKeyboard: Boolean = false
 
     val colorScheme get() = activeColorScheme.value

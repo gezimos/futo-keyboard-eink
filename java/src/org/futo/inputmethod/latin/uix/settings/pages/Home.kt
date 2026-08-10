@@ -52,7 +52,8 @@ val HomeScreenLite = UserSettingsMenu(
         userSettingNavigationItem(
             title = R.string.settings_check_for_updates_manually,
             style = NavigationItemStyle.Misc,
-            navigate = { nav -> nav.context.openManualUpdateCheck() }
+            navigate = { nav -> nav.context.openManualUpdateCheck() },
+            icon = R.drawable.arrow_down
         ),
 
         userSettingNavigationItem(
@@ -105,13 +106,6 @@ val HomeScreenLite = UserSettingsMenu(
             icon = R.drawable.smile
         ),
 
-        userSettingNavigationItem(
-            title = R.string.theme_settings_title,
-            style = NavigationItemStyle.HomeTertiary,
-            navigateTo = "themes",
-            icon = R.drawable.themes
-        ),
-
         //if(!isPaid) {
         userSettingNavigationItem(
             title = R.string.payment_screen_short_title,
@@ -145,12 +139,14 @@ val HomeScreenLite = UserSettingsMenu(
             title = R.string.misc_settings_title,
             style = NavigationItemStyle.MiscNoArrow,
             navigateTo = "misc",
+            icon = R.drawable.more_horizontal
         ),
 
         userSettingNavigationItem(
             title = R.string.credits_menu_title,
             style = NavigationItemStyle.MiscNoArrow,
             navigateTo = "credits",
+            icon = R.drawable.book
         ),
     )
 )

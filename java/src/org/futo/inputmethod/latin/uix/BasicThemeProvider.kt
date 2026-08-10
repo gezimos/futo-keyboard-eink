@@ -3,6 +3,7 @@ package org.futo.inputmethod.latin.uix
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.ColorFilter
+import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PixelFormat
 import android.graphics.Rect
@@ -354,7 +355,8 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
         val onKeyColorThird = Color(onKeyColor).copy(alpha = 0.33f).toArgb()
 
         val enterKeyBackground = if(expertMode) { functionalKeyColor } else { primary }
-        val enterKeyForeground = if(expertMode) { onBackgroundThird } else { onPrimary }
+        // Mono: the enter icon uses the plain key color instead of onPrimary
+        val enterKeyForeground = if(expertMode) { onBackgroundThird } else { onKeyColor }
 
         colors[R.styleable.Keyboard_Key_keyTextColor] = onKeyColor
         colors[R.styleable.Keyboard_Key_keyTextInactivatedColor] = onKeyColorHalf
@@ -441,12 +443,13 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
                     foregroundColorPressed    = colorScheme.onSurface.toArgb()
                 )
             } else {
+                // Mono: no button fill, just the icon in the key foreground color
                 VisualStyleDescriptor(
-                    backgroundDrawable = coloredRoundedRectangle(colorScheme.primary.toArgb(), dp(actionKeyRadius)),
-                    foregroundColor    = colorScheme.onPrimary.toArgb(),
+                    backgroundDrawable = null,
+                    foregroundColor    = onKeyColor,
 
-                    backgroundDrawablePressed = coloredRoundedRectangle(colorScheme.secondaryContainer.toArgb(), dp(actionKeyRadius)),
-                    foregroundColorPressed    = colorScheme.onSecondaryContainer.toArgb()
+                    backgroundDrawablePressed = coloredRoundedRectangle(colorScheme.keyboardPress.toArgb(), dp(actionKeyRadius)),
+                    foregroundColorPressed    = onKeyColor
                 )
             },
 
@@ -517,21 +520,14 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
                 keyCornerRadius
             ),
 
-            KeyVisualStyle.Spacebar to when {
-                keyBorders -> makeVisualStyle(keyColor, onKeyColor, highlight, highlightForeground, spaceCornerRadius)
-                expertMode -> makeVisualStyle(
-                    colorScheme.outline.copy(alpha = 0.1f).toArgb(),
-                    onKeyColor,
-                    highlight, highlightForeground,
-                    spaceCornerRadius
-                )
-                else -> makeVisualStyle(
-                    highlight,
-                    onKeyColor,
-                    background, onBackground,
-                    spaceCornerRadius
-                )
-            }
+            // Mono: the spacebar is a thin horizontal line, not a filled pill
+            KeyVisualStyle.Spacebar to VisualStyleDescriptor(
+                backgroundDrawable = SpacebarLineDrawable(onKeyColor, dp(2.dp), dp(16.dp)),
+                foregroundColor = onKeyColor,
+
+                backgroundDrawablePressed = coloredRoundedRectangle(highlight, dp(spaceCornerRadius)),
+                foregroundColorPressed = onKeyColor
+            )
         )
 
         keyBackground = keyStyles[KeyVisualStyle.Normal]!!.backgroundDrawable!!
@@ -550,10 +546,43 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
         colors[R.styleable.Keyboard_Key_keyPreviewTextColor] = colorScheme.onKeyboardContainer.toArgb()
 
         moreKeysTextColor = colorScheme.onKeyboardContainer.toArgb()
-        moreKeysKeyboardBackground = kdcMatcher.matchMoreKeysKeyboardBackground("") ?: coloredRoundedRectangle(colorScheme.keyboardPress.toArgb(), dp(keyCornerRadius))
+        // Mono: white long-press panel with a hairline outline so it still
+        // reads as a panel over the white keyboard
+        moreKeysKeyboardBackground = kdcMatcher.matchMoreKeysKeyboardBackground("")
+            ?: coloredRoundedRectangle(colorScheme.keyboardSurface.toArgb(), dp(keyCornerRadius)).apply {
+                setStroke(dp(1.dp).toInt().coerceAtLeast(1), colorScheme.onKeyboardContainer.toArgb())
+            }
 
         assert(icons.keys == KeyboardIconsSet.validIcons) {
             "Icons differ. Missing: ${KeyboardIconsSet.validIcons - icons.keys}, extraneous: ${icons.keys - KeyboardIconsSet.validIcons}"
         }
     }
+}
+
+/** Draws the spacebar as a thin horizontal line, sitting below center like an underscore. */
+private class SpacebarLineDrawable(
+    @ColorInt color: Int,
+    private val thickness: Float,
+    private val horizontalInset: Float,
+) : Drawable() {
+    private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { this.color = color }
+
+    override fun draw(canvas: Canvas) {
+        val b = bounds
+        val centerY = b.top + b.height() * 0.72f
+        canvas.drawRoundRect(
+            b.left + horizontalInset,
+            centerY - thickness / 2f,
+            b.right - horizontalInset,
+            centerY + thickness / 2f,
+            thickness / 2f,
+            thickness / 2f,
+            paint
+        )
+    }
+
+    override fun setAlpha(alpha: Int) { paint.alpha = alpha }
+    override fun setColorFilter(colorFilter: ColorFilter?) { paint.colorFilter = colorFilter }
+    @Deprecated("Deprecated in Java")
+    override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 }

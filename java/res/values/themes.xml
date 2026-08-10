@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Mono: light, and no window enter/exit animations anywhere -->
+    <style name="Theme.MonoSettings" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
+
     <style name="Theme.TextEditPopup" parent="Theme.AppCompat.DayNight.Dialog">
         <item name="windowNoTitle">true</item>
         <item name="android:windowBackground">@null</item>

@@ -149,6 +149,7 @@
     <string name="action_kind_disabled">Hidden Actions</string>
 
     <!-- Keyboard themes -->
+    <string name="theme_mono">Mono</string>
     <string name="theme_default_dark">Dark Mode</string>
     <string name="theme_default_light">Light Mode</string>
     <string name="theme_amoled_dark">AMOLED Dark Purple</string>

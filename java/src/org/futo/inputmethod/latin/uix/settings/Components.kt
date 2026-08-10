@@ -677,27 +677,9 @@ fun NavigationItem(title: String, style: NavigationItemStyle, navigate: () -> Un
         compact = compact,
         icon = {
             icon?.let {
-                val circleColor = when(style) {
-                    NavigationItemStyle.HomePrimary -> MaterialTheme.colorScheme.primaryContainer
-                    NavigationItemStyle.HomeSecondary -> MaterialTheme.colorScheme.secondaryContainer
-                    NavigationItemStyle.HomeTertiary -> MaterialTheme.colorScheme.tertiaryContainer
-
-                    NavigationItemStyle.MiscNoArrow,
-                    NavigationItemStyle.Misc,
-                    NavigationItemStyle.ExternalLink,
-                    NavigationItemStyle.Mail -> Color.Transparent
-                }
-
-                val iconColor = when(style) {
-                    NavigationItemStyle.HomePrimary -> MaterialTheme.colorScheme.onPrimaryContainer
-                    NavigationItemStyle.HomeSecondary -> MaterialTheme.colorScheme.onSecondaryContainer
-                    NavigationItemStyle.HomeTertiary -> MaterialTheme.colorScheme.onTertiaryContainer
-
-                    NavigationItemStyle.MiscNoArrow,
-                    NavigationItemStyle.Mail,
-                    NavigationItemStyle.ExternalLink,
-                    NavigationItemStyle.Misc -> LocalContentColor.current.copy(alpha = 0.75f)
-                }
+                // Mono: every icon renders identically — plain foreground glyph, no colored circle
+                val circleColor = Color.Transparent
+                val iconColor = LocalContentColor.current
 
                 Canvas(modifier = Modifier.size(48.dp)) {
                     drawCircle(circleColor, this.size.maxDimension / 2.4f)

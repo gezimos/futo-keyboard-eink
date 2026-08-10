@@ -72,7 +72,7 @@
 
         <!-- Activities -->
         <activity android:name=".uix.settings.SettingsActivity"
-             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+             android:theme="@style/Theme.MonoSettings"
              android:icon="@mipmap/ic_launcher"
              android:roundIcon="@mipmap/ic_launcher_round"
              android:launchMode="singleTask"
@@ -87,7 +87,7 @@
 
         <activity android:name=".uix.ImportResourceActivity"
             android:label="@string/language_settings_import_dictionary_or_model"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            android:theme="@style/Theme.MonoSettings"
             android:icon="@mipmap/ic_launcher"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:launchMode="singleTask"
@@ -155,7 +155,7 @@
             android:label="@string/payment_screen_payment_complete_title"
             android:clearTaskOnLaunch="false"
             android:launchMode="singleInstance"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+            android:theme="@style/Theme.MonoSettings">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 

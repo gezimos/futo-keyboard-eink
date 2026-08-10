@@ -21,6 +21,6 @@
     android:viewportHeight="24.0"
     android:tint="?android:attr/colorButtonNormal">
     <path
-        android:fillColor="@android:color/white"
+        android:fillColor="#FF000000"
         android:pathData="M2,22h20V2L2,22z"/>
 </vector>

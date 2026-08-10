@@ -2,31 +2,10 @@ package org.futo.inputmethod.latin.uix.theme
 
 import android.content.Context
 import androidx.annotation.StringRes
-import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.KeyboardColorScheme
 import org.futo.inputmethod.latin.uix.actions.BugInfo
 import org.futo.inputmethod.latin.uix.actions.BugViewerState
-import org.futo.inputmethod.latin.uix.theme.presets.AMOLEDDarkPurple
-import org.futo.inputmethod.latin.uix.theme.presets.CatppuccinMocha
-import org.futo.inputmethod.latin.uix.theme.presets.ClassicMaterialDark
-import org.futo.inputmethod.latin.uix.theme.presets.ClassicMaterialLight
-import org.futo.inputmethod.latin.uix.theme.presets.CottonCandy
-import org.futo.inputmethod.latin.uix.theme.presets.DeepSeaDark
-import org.futo.inputmethod.latin.uix.theme.presets.DeepSeaLight
-import org.futo.inputmethod.latin.uix.theme.presets.DefaultDarkScheme
-import org.futo.inputmethod.latin.uix.theme.presets.DefaultLightScheme
-import org.futo.inputmethod.latin.uix.theme.presets.DynamicDarkTheme
-import org.futo.inputmethod.latin.uix.theme.presets.DynamicLightTheme
-import org.futo.inputmethod.latin.uix.theme.presets.DynamicSystemTheme
-import org.futo.inputmethod.latin.uix.theme.presets.Emerald
-import org.futo.inputmethod.latin.uix.theme.presets.Gradient1
-import org.futo.inputmethod.latin.uix.theme.presets.HotDog
-import org.futo.inputmethod.latin.uix.theme.presets.Snowfall
-import org.futo.inputmethod.latin.uix.theme.presets.SteelGray
-import org.futo.inputmethod.latin.uix.theme.presets.Sunflower
-import org.futo.inputmethod.latin.uix.theme.presets.VoiceInputTheme
-import org.futo.inputmethod.latin.uix.theme.presets.DevTheme
-import org.futo.inputmethod.latin.uix.theme.presets.HighContrastYellow
+import org.futo.inputmethod.latin.uix.theme.presets.Mono
 
 data class ThemeOption(
     val dynamic: Boolean,
@@ -37,46 +16,12 @@ data class ThemeOption(
 )
 
 val ThemeOptions = mapOf(
-    DefaultDarkScheme.key to DefaultDarkScheme,
-    DefaultLightScheme.key to DefaultLightScheme,
-
-    DynamicSystemTheme.key to DynamicSystemTheme,
-    DynamicDarkTheme.key to DynamicDarkTheme,
-    DynamicLightTheme.key to DynamicLightTheme,
-
-    ClassicMaterialDark.key to ClassicMaterialDark,
-    ClassicMaterialLight.key to ClassicMaterialLight,
-    AMOLEDDarkPurple.key to AMOLEDDarkPurple,
-
-    Sunflower.key to Sunflower,
-    Snowfall.key to Snowfall,
-    SteelGray.key to SteelGray,
-    Emerald.key to Emerald,
-    CottonCandy.key to CottonCandy,
-
-    DeepSeaLight.key to DeepSeaLight,
-    DeepSeaDark.key to DeepSeaDark,
-
-    Gradient1.key to Gradient1,
-    VoiceInputTheme.key to VoiceInputTheme,
-    HotDog.key to HotDog,
-    DevTheme.key to DevTheme,
-    HighContrastYellow.key to HighContrastYellow,
-    CatppuccinMocha.key to CatppuccinMocha,
+    Mono.key to Mono,
 )
 
 val ThemeOptionKeys = ThemeOptions.keys
 
-fun defaultThemeOption(context: Context): ThemeOption =
-    if(context.resources.getBoolean(R.bool.use_dev_styling)) {
-        DevTheme
-    } else {
-        if(DynamicSystemTheme.available(context)) {
-            DynamicSystemTheme
-        } else {
-            DefaultDarkScheme
-        }
-    }
+fun defaultThemeOption(context: Context): ThemeOption = Mono
 
 fun getThemeOption(context: Context, key: String): ThemeOption? {
     return ThemeOptions[key] ?: run {
