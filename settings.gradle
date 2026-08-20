@@ -16,4 +16,7 @@ dependencyResolutionManagement {
         }
     }
 }
+// Pinned so APK/AAB output names don't depend on the checkout directory name.
+rootProject.name = 'futo-keyboard-eink'
+
 include ':voiceinput-shared'

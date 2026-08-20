@@ -1,30 +1,48 @@
-# FUTO Keyboard
+# FUTO Keyboard for E-Ink
 
-The goal is to make a good modern keyboard that stays offline and doesn't spy on you. This keyboard is a fork of [LatinIME, The Android Open-Source Keyboard](https://android.googlesource.com/platform/packages/inputmethods/LatinIME), with significant changes made to it.
+An unofficial fork of [FUTO Keyboard](https://github.com/futo-org/android-keyboard), retuned for e-ink displays. **Not affiliated with, endorsed by, or supported by FUTO Holdings, Inc.**
 
-Check out the [FUTO Keyboard website](https://keyboard.futo.tech/) for downloads and more information.
+> **This software has been modified from the original.**
+> All modifications are visual. They currently live in one commit, [`15a2e8ff`](https://github.com/gezimos/futo-keyboard-eink/commit/15a2e8ff6ae9099978e27a000add992b48c4a987) — 124 files, +494/−471. Full breakdown in [What's different](#whats-different-from-upstream) below.
+>
+> For the unmodified original, see [futo-org/android-keyboard](https://github.com/futo-org/android-keyboard).
 
-The code is licensed under the [FUTO Source First License 1.1](LICENSE.md).
+Upstream's goal — a good modern keyboard that stays offline and doesn't spy on you — is unchanged here. FUTO Keyboard is itself a fork of [LatinIME, The Android Open-Source Keyboard](https://android.googlesource.com/platform/packages/inputmethods/LatinIME), with significant changes made to it.
 
-## Issue tracking and contributing
+## What's different from upstream
 
-Please check the GitHub repository to report issues: [https://github.com/futo-org/android-keyboard/](https://github.com/futo-org/android-keyboard/)
+E-ink panels repaint slowly and render colour as flat grey. Upstream's theming leans on tonal palettes, gradients and shadow elevation, which either ghost or wash out on e-ink. This fork strips all of that down to pure black-on-white.
 
-The source code is hosted on our [internal GitLab](https://gitlab.futo.org/keyboard/latinime) and mirrored to [GitHub](https://github.com/futo-org/android-keyboard/). As registration is closed on our internal GitLab, we use GitHub instead for issues and pull requests.
+**Theming**
+- New `Mono` theme: `#FFFFFF` surfaces, `#000000` glyphs and outlines, shadow alpha forced to `0`.
+- `Mono` is now the *only* registered theme and the default. The other 21 presets are unregistered — Dark/Light Mode, Dynamic System/Dark/Light, Classic Material Dark/Light, AMOLED Dark Purple, Sunflower, Snowfall, Steel Gray, Emerald, Cotton Candy, Deep Sea Light/Dark, Gradient1, Voice Input, Hot Dog, Dev, High Contrast Yellow, Catppuccin Mocha.
+- Theme picker removed from the settings home screen; the Themes action removed from the favourites row.
 
-Due to custom license, pull requests to this repository require signing a [CLA](https://cla.futo.org/) which you can do after opening a PR. Contributions to the [layouts repo](https://github.com/futo-org/futo-keyboard-layouts) don't require CLA as they're Apache-2.0
+**Keyboard surface**
+- Enter key renders as a plain icon with no fill; spacebar is drawn as a thin horizontal line; the long-press panel is white with a hairline outline.
+- Key hint glyphs (the small corner numbers/symbols) are hidden via a transparent `hintColor`. **Long-press still produces the same characters** — only the glyph is hidden.
+- Key-preview popup is off by default (`config_default_key_preview_popup` flipped to `false` across all four form-factor configs).
 
-If you want to help translate the app, please do so via our Pontoon instance: https://i18n-keyboard.futo.org/
+**App chrome**
+- Roughly 100 white vector drawables recoloured to black app-wide.
+- Launcher icon background changed from `#1E293B` to `#FFFFFF`.
+- Settings, import and payment activities pinned to a new `Theme.MonoSettings` (light, `windowAnimationStyle` set to `@null`) — no day/night switching and no window enter/exit animations.
 
-## Layouts
+**Deliberately unchanged**: layouts, prediction, swipe, voice input, offline behaviour, the app name ("FUTO Keyboard") and the package ID (`org.futo.inputmethod.latin`) — so this installs and behaves as FUTO Keyboard on-device rather than as a separate app.
 
-If you want to contribute layouts, check out the [layouts repo](https://github.com/futo-org/futo-keyboard-layouts).
+## Issue tracking
+
+Report issues with **this fork** here: [https://github.com/gezimos/futo-keyboard-eink/issues](https://github.com/gezimos/futo-keyboard-eink/issues)
+
+For anything not e-ink-specific — an upstream bug, a layout problem, a language model issue — report it to FUTO instead: [https://github.com/futo-org/android-keyboard/](https://github.com/futo-org/android-keyboard/). Please don't send fork-specific reports to FUTO's tracker.
+
+Upstream contribution notes, for reference: pull requests to FUTO's repository require signing a [CLA](https://cla.futo.org/); contributions to the [layouts repo](https://github.com/futo-org/futo-keyboard-layouts) don't, as they're Apache-2.0. Translations go through FUTO's [Pontoon instance](https://i18n-keyboard.futo.org/).
 
 ## Building
 
-When cloning the repository, you must perform a recursive clone to fetch all dependencies:
+Clone recursively — the build needs several submodules:
 ```
-git clone --recursive https://gitlab.futo.org/keyboard/latinime.git
+git clone --recursive https://github.com/gezimos/futo-keyboard-eink.git
 ```
 
 If you forgot to specify recursive clone, use this to fetch submodules:
@@ -38,15 +56,21 @@ You can then open the project in Android Studio and build it that way, or use gr
 ./gradlew assembleStableRelease
 ```
 
+Note that `unstable` is the default product flavor and carries an `.unstable` application ID suffix, so it installs *alongside* a `stable` build rather than replacing it. To build and install onto an existing stable install:
+```
+./gradlew installStableDebug
+```
+
+If gradle reports `SDK location not found`, create a `local.properties` file in the repository root pointing at your SDK, for example `sdk.dir=/Users/you/Library/Android/sdk`. This file is machine-local and not committed.
+
 ## APK signing
 
-For official FUTO Keyboard versions, you can verify the APK's signing key fingerprint for integrity.
+Builds from this fork are signed with a local debug or self-managed key. **They do not match FUTO's official signing key**, and the fingerprints published by upstream will not verify them. Verify these builds against your own key.
 
-```
-Signing key fingerprint for all versions except Google Play:
+If you want official, FUTO-signed FUTO Keyboard builds and their published fingerprints, get them from [keyboard.futo.tech](https://keyboard.futo.tech/) — not from this repository.
 
-MD5: 3A:BB:71:C6:BB:E4:92:27:B1:E3:5D:81:01:48:6A:B0
-SHA1: 5D:15:B3:6E:C9:6A:96:28:41:09:DD:62:93:0D:9C:39:9F:5F:06:43
-SHA-256: 74:3F:AD:58:64:AB:C4:26:50:0B:2D:C2:C4:7C:8A:D3:24:CB:CD:16:03:3F:80:16:99:48:41:35:63:74:F9:95
+## License
 
-```
+The code is licensed under the [FUTO Source First License 1.1](LICENSE.md), which permits modification and redistribution for non-commercial purposes, free of charge. The original AOSP keyboard code is Apache-2.0; see [NOTICE](NOTICE).
+
+"FUTO" is a trademark of FUTO Holdings, Inc. It is used here only to identify the upstream project this fork is derived from.
