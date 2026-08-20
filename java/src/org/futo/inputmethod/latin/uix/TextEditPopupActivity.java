@@ -2,6 +2,7 @@ package org.futo.inputmethod.latin.uix;
 
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
@@ -32,9 +33,15 @@ public class TextEditPopupActivity extends AppCompatActivity {
         @ColorInt final int fgColor = Color.BLACK;
         @ColorInt final int primaryColor = 0xFF6200EE;
 
+        final GradientDrawable editBackground = new GradientDrawable();
+        editBackground.setColor(bgColor);
+        editBackground.setStroke(dp(2), fgColor);
+        editBackground.setCornerRadius(dp(8));
+
         final EditText editText = new EditText(this);
         editText.setHint(R.string.settings_try_typing_here);
-        editText.setBackgroundColor(bgColor);
+        editText.setBackground(editBackground);
+        editText.setPadding(dp(12), dp(12), dp(12), dp(12));
         editText.setTextColor(fgColor);
         editText.setHintTextColor(adjustAlpha(fgColor, 0.7f));
         editText.setHighlightColor(adjustAlpha(primaryColor, 0.7f));

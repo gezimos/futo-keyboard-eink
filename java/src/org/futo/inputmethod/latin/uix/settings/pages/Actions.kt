@@ -152,6 +152,7 @@ val ActionsScreen = UserSettingsMenu(
 
         userSettingNavigationItem(
             title = R.string.action_editor_title,
+            icon = R.drawable.move,
             subtitle = R.string.action_editor_subtitle,
             style = NavigationItemStyle.Misc,
             navigateTo = "actionEdit"

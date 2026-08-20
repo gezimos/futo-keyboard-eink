@@ -62,6 +62,7 @@ import org.futo.inputmethod.latin.uix.namePreferenceKeyFor
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.Route
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
+import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.Tip
 import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.pages.modelmanager.openModelImporter
@@ -505,6 +506,7 @@ data class DeleteInfo(
 val LanguageSettingsTop = listOf(
     userSettingNavigationItem(
         title = R.string.language_settings_add_language_button,
+        icon = R.drawable.plus_circle,
         style = NavigationItemStyle.Misc,
         navigateTo = "addLanguage",
     )
@@ -512,6 +514,7 @@ val LanguageSettingsTop = listOf(
 val LanguageSettingsBottom = listOf(
     userSettingNavigationItem(
         title = R.string.language_settings_import_resource_from_file,
+        icon = R.drawable.file_text,
         style = NavigationItemStyle.Misc,
         navigate = { nav ->
             openModelImporter(nav.context)
@@ -519,6 +522,7 @@ val LanguageSettingsBottom = listOf(
     ),
     userSettingNavigationItem(
         title = R.string.language_settings_explore_voice_input_models_online,
+        icon = R.drawable.mic,
         style = NavigationItemStyle.Misc,
         navigate = { nav ->
             nav.context.openURI(
@@ -529,6 +533,7 @@ val LanguageSettingsBottom = listOf(
     ),
     userSettingNavigationItem(
         title = R.string.language_settings_explore_dictionaries_online,
+        icon = R.drawable.book,
         style = NavigationItemStyle.Misc,
         navigate = { nav ->
             nav.context.openURI(
@@ -539,6 +544,7 @@ val LanguageSettingsBottom = listOf(
     ),
     userSettingNavigationItem(
         title = R.string.language_settings_explore_transformers_online,
+        icon = R.drawable.cpu,
         style = NavigationItemStyle.Misc,
         navigate = { nav ->
             nav.context.openURI(
@@ -555,6 +561,7 @@ val LanguageSettingsLite = UserSettingsMenu(
     settings = LanguageSettingsTop + listOf(
         userSettingNavigationItem(
             title = R.string.language_settings_manage_languages_title,
+            icon = R.drawable.globe,
             subtitle = R.string.language_settings_manage_languages_subtitle,
             navigateTo = "languages",
             style = NavigationItemStyle.Misc
@@ -634,20 +641,18 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
             }
         )
     }
-    LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
-        item {
-            ScreenTitle(
-                stringResource(R.string.language_settings_title),
-                showBack = true,
-                navController
-            )
-        }
+    ScrollableList(horizontalAlignment = Alignment.CenterHorizontally) {
+        ScreenTitle(
+            stringResource(R.string.language_settings_title),
+            showBack = true,
+            navController
+        )
 
-        items(LanguageSettingsTop) {
+        LanguageSettingsTop.forEach {
             it.component()
         }
 
-        items(inputMethodKeys) { localeString ->
+        inputMethodKeys.forEach { localeString ->
             val subtypes = inputMethodList[localeString]!!
 
             val locale = Subtypes.getLocale(localeString)
@@ -746,11 +751,10 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
             Spacer(modifier = Modifier.height(12.dp))
         }
 
-        item {
-            Spacer(modifier = Modifier.height(32.dp))
-            ScreenTitle(stringResource(R.string.language_settings_other_options))
-        }
-        items(LanguageSettingsBottom) {
+        Spacer(modifier = Modifier.height(32.dp))
+        ScreenTitle(stringResource(R.string.language_settings_other_options))
+
+        LanguageSettingsBottom.forEach {
             it.component()
         }
     }

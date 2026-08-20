@@ -2,6 +2,7 @@ package org.futo.inputmethod.latin.uix.actions
 
 import android.view.KeyEvent
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
@@ -89,6 +90,7 @@ fun TogglableKey(
                 onClick = { }
             ),
         shape = RoundedCornerShape(8.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface),
         color = if(toggled) { MaterialTheme.colorScheme.secondary } else { MaterialTheme.colorScheme.secondaryContainer }
     ) {
         contents(if(toggled) { MaterialTheme.colorScheme.onSecondary } else { MaterialTheme.colorScheme.onSecondaryContainer })
@@ -141,7 +143,7 @@ fun ActionKey(
     onTrigger: () -> Unit,
     modifier: Modifier = Modifier,
     repeatable: Boolean = true,
-    color: Color = MaterialTheme.colorScheme.primary,
+    color: Color = MaterialTheme.colorScheme.surface,
     contents: @Composable () -> Unit
 ) {
     Surface(
@@ -152,6 +154,7 @@ fun ActionKey(
                 onTrigger = { onTrigger() }
             ),
         shape = RoundedCornerShape(8.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface),
         color = color
     ) {
         contents()
@@ -172,7 +175,7 @@ fun ArrowKeys(
         ) {
             IconWithColor(
                 iconId = R.drawable.arrow_left,
-                iconColor = MaterialTheme.colorScheme.onPrimary
+                iconColor = MaterialTheme.colorScheme.onSurface
             )
         }
 
@@ -187,7 +190,7 @@ fun ArrowKeys(
             ) {
                 IconWithColor(
                     iconId = R.drawable.arrow_up,
-                    iconColor = MaterialTheme.colorScheme.onPrimary
+                    iconColor = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -200,7 +203,7 @@ fun ArrowKeys(
             ) {
                 IconWithColor(
                     iconId = R.drawable.arrow_down,
-                    iconColor = MaterialTheme.colorScheme.onPrimary
+                    iconColor = MaterialTheme.colorScheme.onSurface
                 )
             }
         }
@@ -213,7 +216,7 @@ fun ArrowKeys(
         ) {
             IconWithColor(
                 iconId = R.drawable.arrow_right,
-                iconColor = MaterialTheme.colorScheme.onPrimary
+                iconColor = MaterialTheme.colorScheme.onSurface
             )
         }
     }

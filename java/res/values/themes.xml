@@ -5,11 +5,13 @@
         <item name="android:windowAnimationStyle">@null</item>
     </style>
 
-    <style name="Theme.TextEditPopup" parent="Theme.AppCompat.DayNight.Dialog">
+    <style name="Theme.TextEditPopup" parent="Theme.AppCompat.Light.Dialog">
         <item name="windowNoTitle">true</item>
         <item name="android:windowBackground">@null</item>
         <item name="android:windowCloseOnTouchOutside">true</item>
         <item name="android:windowIsFloating">true</item>
-        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:backgroundDimAmount">0.0</item>
+        <item name="android:windowAnimationStyle">@null</item>
     </style>
 </resources>

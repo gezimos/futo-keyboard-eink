@@ -280,6 +280,7 @@ val SwipeMenu = UserSettingsMenu(
 
         userSettingNavigationItem(
             title = R.string.swipe_settings_configure_shortcuts,
+            icon = R.drawable.direction_arrows,
             subtitle = R.string.swipe_settings_configure_shortcuts_subtitle,
             navigateTo = LongPressMenu.navPath,
             style = NavigationItemStyle.Misc

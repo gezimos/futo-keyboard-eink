@@ -20,12 +20,14 @@ val MiscMenu = UserSettingsMenu(
 
         userSettingNavigationItem(
             title = (R.string.settings_export_configuration),
+            icon = R.drawable.arrow_up,
             subtitle = (R.string.settings_export_configuration_subtitle),
             style = NavigationItemStyle.Misc,
             navigateTo = "exportingcfg"
         ).copy(searchTags = R.string.settings_import_export_tags),
         userSettingNavigationItem(
             title = (R.string.settings_import_configuration),
+            icon = R.drawable.arrow_down,
             subtitle = (R.string.settings_import_configuration_subtitle),
             style = NavigationItemStyle.Misc,
             navigate = { nav ->

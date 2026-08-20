@@ -81,6 +81,7 @@ val BlacklistScreenLite = UserSettingsMenu(
 
         userSettingNavigationItem(
             title = R.string.prediction_settings_word_blacklist_edit_blacklisted_words_title,
+            icon = R.drawable.file_text,
             subtitle = R.string.prediction_settings_word_blacklist_edit_blacklisted_words_subtitle,
             style = NavigationItemStyle.Misc,
             navigateTo = "blacklist"

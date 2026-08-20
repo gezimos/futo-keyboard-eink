@@ -12,8 +12,8 @@ import org.futo.inputmethod.latin.uix.theme.selector.ThemePreview
 private val lightScheme = extendedLightColorScheme(
     primary=Color(0xFF000000),
     onPrimary=Color(0xFFFFFFFF),
-    primaryContainer=Color(0xFF000000),
-    onPrimaryContainer=Color(0xFFFFFFFF),
+    primaryContainer=Color(0xFFFFFFFF),
+    onPrimaryContainer=Color(0xFF000000),
     secondary=Color(0xFF000000),
     onSecondary=Color(0xFFFFFFFF),
     secondaryContainer=Color(0xFFFFFFFF),

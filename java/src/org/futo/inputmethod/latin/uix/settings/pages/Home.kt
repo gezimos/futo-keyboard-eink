@@ -36,6 +36,7 @@ import org.futo.inputmethod.latin.uix.TextEditPopupActivity
 import org.futo.inputmethod.latin.uix.USE_SYSTEM_VOICE_INPUT
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
+import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.UserSetting
 import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.render
@@ -155,22 +156,18 @@ val HomeScreenLite = UserSettingsMenu(
 @Composable
 fun HomeScreen(navController: NavHostController = rememberNavController()) {
     val context = LocalContext.current
-    val scrollState = rememberScrollState()
     val isDeveloper = useDataStoreValue(IS_DEVELOPER)
     val isPaid = useDataStoreValue(IS_ALREADY_PAID)
 
     Column {
-        Column(
-            modifier = Modifier
-                .weight(1.0f)
-                .fillMaxWidth()
-                .verticalScroll(scrollState)
+        ScrollableList(
+            modifier = Modifier.weight(1.0f)
         ) {
-            Spacer(modifier = Modifier.height(24.dp))
-            Row(Modifier.padding(16.dp)) {
+            Row(Modifier.padding(horizontal = 16.dp)) {
                 Text(stringResource(R.string.english_ime_settings), style = Typography.Heading.Medium, modifier = Modifier
                     .align(CenterVertically)
-                    .weight(1.0f))
+                    .weight(1.0f)
+                    .padding(vertical = 16.dp))
 
                 Spacer(Modifier.width(4.dp))
 

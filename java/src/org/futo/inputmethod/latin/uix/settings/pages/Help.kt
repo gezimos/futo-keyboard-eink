@@ -90,6 +90,7 @@ val HelpMenu = UserSettingsMenu(
 
         userSettingNavigationItem(
             title = R.string.help_menu_website,
+            icon = R.drawable.globe,
             subtitle = R.string.help_menu_website_subtitle,
             style = NavigationItemStyle.Misc,
             navigate = { nav ->
@@ -99,6 +100,7 @@ val HelpMenu = UserSettingsMenu(
 
         userSettingNavigationItem(
             title = R.string.help_menu_documentation,
+            icon = R.drawable.book,
             subtitle = R.string.help_menu_documentation_subtitle,
             style = NavigationItemStyle.Misc,
             navigate = { nav ->
@@ -107,6 +109,7 @@ val HelpMenu = UserSettingsMenu(
         ),
         userSettingNavigationItem(
             title = R.string.help_menu_discord,
+            icon = R.drawable.people_and_body,
             subtitle = R.string.help_menu_discord_subtitle,
             style = NavigationItemStyle.Misc,
             navigate = { nav ->
@@ -115,6 +118,7 @@ val HelpMenu = UserSettingsMenu(
         ),
         userSettingNavigationItem(
             title = R.string.help_menu_futo_chat,
+            icon = R.drawable.smile,
             subtitle = R.string.help_menu_futo_chat_subtitle,
             style = NavigationItemStyle.Misc,
             navigate = { nav ->
@@ -123,6 +127,7 @@ val HelpMenu = UserSettingsMenu(
         ),
         userSettingNavigationItem(
             title = R.string.help_menu_github,
+            icon = R.drawable.code,
             subtitle = R.string.help_menu_github_subtitle,
             style = NavigationItemStyle.Misc,
             navigate = { nav ->
@@ -131,6 +136,7 @@ val HelpMenu = UserSettingsMenu(
         ),
         userSettingNavigationItem(
             title = R.string.help_menu_email,
+            icon = R.drawable.at_sign,
             subtitle = R.string.help_menu_email_subtitle,
             style = NavigationItemStyle.Mail,
             navigate = { nav ->

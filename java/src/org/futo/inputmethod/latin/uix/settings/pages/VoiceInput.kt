@@ -91,6 +91,7 @@ val VoiceInputMenu = UserSettingsMenu(
 
         userSettingNavigationItem(
             title = R.string.voice_input_settings_change_models,
+            icon = R.drawable.cpu,
             subtitle = R.string.voice_input_settings_change_models_subtitle,
             style = NavigationItemStyle.Misc,
             navigateTo = "languages"

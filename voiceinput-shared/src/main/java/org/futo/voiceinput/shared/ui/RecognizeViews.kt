@@ -32,6 +32,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableFloatState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -59,6 +60,9 @@ import kotlinx.coroutines.delay
 import org.futo.voiceinput.shared.R
 import org.futo.voiceinput.shared.types.MagnitudeState
 import org.futo.voiceinput.shared.ui.theme.Typography
+import kotlin.math.abs
+import kotlin.math.min
+import kotlin.math.roundToInt
 
 data class MicrophoneDeviceState(
     val bluetoothAvailable: Boolean,
@@ -68,18 +72,53 @@ data class MicrophoneDeviceState(
     val deviceName: String
 )
 
-@Composable
-fun AnimatedRecognizeCircle(magnitude: MutableFloatState = mutableFloatStateOf(0.5f)) {
-    val radius = animateValueChanges(magnitude.floatValue, 100)
-    val color = MaterialTheme.colorScheme.primaryContainer
+private const val WaveformBarCount = 32
+private const val WaveformLevels = 8
+private const val WaveformTickMs = 100L
 
-    val radiusMod = with(LocalDensity.current) {
-        80.dp.toPx()
+@Composable
+fun AudioWaveform(magnitude: MutableFloatState = mutableFloatStateOf(0.5f)) {
+    val color = MaterialTheme.colorScheme.onSurface
+
+    val levels = remember {
+        mutableStateListOf<Int>().apply { repeat(WaveformBarCount) { add(0) } }
     }
 
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(WaveformTickMs)
+            val level = (magnitude.floatValue.coerceIn(0f, 1f) * WaveformLevels).roundToInt()
+
+            if (level == 0 && levels.all { it == 0 }) continue
+
+            levels.removeAt(0)
+            levels.add(level)
+        }
+    }
+
+    val density = LocalDensity.current
+    val iconClearance = with(density) { 72.dp.toPx() }
+    val maxBarCap = with(density) { 56.dp.toPx() }
+
     Canvas(modifier = Modifier.fillMaxSize()) {
-        val drawRadius = radiusMod * (0.8f + radius * 2.0f)
-        drawCircle(color = color, radius = drawRadius)
+        val slot = size.width / WaveformBarCount
+        val barWidth = (slot * 0.42f).coerceAtLeast(2f)
+        val maxBar = min(size.height * 0.40f, maxBarCap)
+        val minBar = barWidth
+        val centerX = size.width / 2f
+
+        levels.forEachIndexed { i, level ->
+            val x = slot * (i + 0.5f)
+            if (abs(x - centerX) < iconClearance / 2f) return@forEachIndexed
+
+            val barHeight = minBar + (level.toFloat() / WaveformLevels) * (maxBar - minBar)
+            drawRoundRect(
+                color = color,
+                topLeft = Offset(x - barWidth / 2f, (size.height - barHeight) / 2f),
+                size = Size(barWidth, barHeight),
+                cornerRadius = CornerRadius(barWidth / 2f, barWidth / 2f)
+            )
+        }
     }
 }
 
@@ -176,13 +215,13 @@ fun InnerRecognize(
     device: MutableState<MicrophoneDeviceState>? = null
 ) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        AnimatedRecognizeCircle(magnitude = magnitude)
+        AudioWaveform(magnitude = magnitude)
 
         Icon(
             painter = painterResource(R.drawable.mic_2_),
             contentDescription = stringResource(R.string.stop_recording),
             modifier = Modifier.size(48.dp),
-            tint = MaterialTheme.colorScheme.onPrimaryContainer
+            tint = MaterialTheme.colorScheme.onSurface
         )
 
         val text = when (state.value) {

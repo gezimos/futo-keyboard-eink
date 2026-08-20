@@ -368,7 +368,7 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
         colors[R.styleable.Keyboard_Key_keyHintLabelColor] = onKeyColorHalf
         colors[R.styleable.Keyboard_Key_keyShiftedLetterHintInactivatedColor] = onKeyColorHalf
         colors[R.styleable.Keyboard_Key_keyShiftedLetterHintActivatedColor] = onKeyColorHalf
-        colors[R.styleable.MainKeyboardView_languageOnSpacebarTextColor] = onKeyColorHalf
+        colors[R.styleable.MainKeyboardView_languageOnSpacebarTextColor] = onKeyColor
         colors[R.styleable.MainKeyboardView_gestureTrailColor] = primary
         colors[R.styleable.MainKeyboardView_slidingKeyInputPreviewColor] = primary
 
@@ -525,7 +525,7 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
                 backgroundDrawable = SpacebarLineDrawable(onKeyColor, dp(2.dp), dp(16.dp)),
                 foregroundColor = onKeyColor,
 
-                backgroundDrawablePressed = coloredRoundedRectangle(highlight, dp(spaceCornerRadius)),
+                backgroundDrawablePressed = SpacebarLineDrawable(onKeyColor, dp(2.dp), dp(16.dp)),
                 foregroundColorPressed = onKeyColor
             )
         )

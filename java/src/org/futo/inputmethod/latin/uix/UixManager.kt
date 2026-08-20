@@ -21,14 +21,15 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
@@ -51,9 +52,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -875,13 +878,13 @@ class UixManager(private val latinIME: LatinIME) {
         AnimatedVisibility(
             visible = !activeDialogRequestDismissed.value,
             modifier = Modifier.matchParentSize(),
-            enter = fadeIn(),
-            exit = fadeOut()
+            enter = EnterTransition.None,
+            exit = ExitTransition.None
         ) {
             if (activeDialogRequest.value != null) {
                 Box(modifier = Modifier.matchParentSize()) {
                     Surface(
-                        color = Color.Black.copy(alpha = 0.66f),
+                        color = Color.Transparent,
                         modifier = Modifier
                             .matchParentSize()
                             .pointerInput(Unit) {
@@ -897,22 +900,29 @@ class UixManager(private val latinIME: LatinIME) {
                         .padding(8.dp)) {
                         Surface(
                             shape = RoundedCornerShape(16.dp),
-                            color = MaterialTheme.colorScheme.primaryContainer,
+                            color = MaterialTheme.colorScheme.surface,
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface),
                             modifier = Modifier.align(Alignment.Center)
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Text(
                                     activeDialogRequest.value?.text ?: "",
-                                    style = Typography.Body.Medium
+                                    style = Typography.Body.Medium,
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
 
-                                Row {
+                                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                     activeDialogRequest.value?.options?.forEach {
-                                        TextButton(
+                                        OutlinedButton(
                                             onClick = {
                                                 it.onClick()
                                                 activeDialogRequestDismissed.value = true
-                                            }
+                                            },
+                                            colors = ButtonDefaults.outlinedButtonColors(
+                                                containerColor = MaterialTheme.colorScheme.surface,
+                                                contentColor = MaterialTheme.colorScheme.onSurface
+                                            ),
+                                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface)
                                         ) {
                                             Text(it.option)
                                         }

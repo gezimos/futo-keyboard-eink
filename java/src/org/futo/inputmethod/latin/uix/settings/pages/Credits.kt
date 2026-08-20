@@ -208,18 +208,21 @@ val CreditsScreenLite = UserSettingsMenu(
     settings = listOf(
         userSettingNavigationItem(
             title = (R.string.credits_menu_contribute_translations_button),
+            icon = R.drawable.globe,
             style = NavigationItemStyle.Misc,
             navigate = {
                 it.context.openURI("https://i18n-keyboard.futo.org/")
             }),
         userSettingNavigationItem(
             title = (R.string.credits_menu_contribute_keyboard_layouts_button),
+            icon = R.drawable.keyboard,
             style = NavigationItemStyle.Misc,
             navigate = {
                 it.context.openURI("https://github.com/futo-org/futo-keyboard-layouts")
             }),
         userSettingNavigationItem(
             title = (R.string.credits_menu_contribute_code_button),
+            icon = R.drawable.code,
             style = NavigationItemStyle.Misc,
             navigate = {
                 it.context.openURI("https://github.com/futo-org/android-keyboard/")

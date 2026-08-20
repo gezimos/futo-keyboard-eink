@@ -8,6 +8,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -58,11 +59,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
@@ -105,6 +112,7 @@ import org.futo.inputmethod.latin.uix.LocalNavController
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.theme.Typography
+import kotlinx.coroutines.launch
 import kotlin.math.pow
 
 @Composable
@@ -632,18 +640,85 @@ fun SettingSliderSharedPrefsInt(
     )
 }
 
+private const val PageOverlapFraction = 0.2f
+
 @Composable
 fun ScrollableList(modifier: Modifier = Modifier, spacing: Dp = 0.dp, horizontalAlignment: Alignment.Horizontal = Alignment.Start, content: @Composable () -> Unit) {
     val scrollState = rememberScrollState()
 
-    Column(
+    val scope = rememberCoroutineScope()
+    val viewportHeight = remember { mutableIntStateOf(0) }
+    val currentPage = remember { mutableIntStateOf(0) }
+
+    fun pageMetrics(): Triple<Int, Int, Int> {
+        val vp = viewportHeight.intValue
+        if (vp <= 0) return Triple(1, 0, 1)
+        val step = (vp - (vp * PageOverlapFraction).toInt()).coerceAtLeast(1)
+        val maxScroll = scrollState.maxValue.coerceAtLeast(0)
+        val pages = if (maxScroll <= 0) 1 else 1 + ((maxScroll + step - 1) / step)
+        return Triple(step, maxScroll, pages)
+    }
+
+    fun movePage(delta: Int) {
+        val (step, maxScroll, pages) = pageMetrics()
+        if (pages <= 1) return
+        val current = currentPage.intValue.coerceIn(0, pages - 1)
+        val target = (current + delta).coerceIn(0, pages - 1)
+        if (target == current && currentPage.intValue == current) return
+        currentPage.intValue = target
+        scope.launch { scrollState.scrollTo((target * step).coerceAtMost(maxScroll)) }
+    }
+
+    Box(
         modifier = modifier
             .fillMaxSize()
-            .verticalScroll(scrollState),
-        verticalArrangement = Arrangement.spacedBy(spacing),
-        horizontalAlignment = horizontalAlignment
+            .background(MaterialTheme.colorScheme.background)
+            .onSizeChanged { viewportHeight.intValue = it.height }
+            .pointerInput(Unit) {
+                var travelled = 0f
+                val threshold = 32.dp.toPx()
+                detectVerticalDragGestures(
+                    onDragStart = { travelled = 0f },
+                    onDragEnd = {
+                        if (travelled <= -threshold) movePage(1)
+                        else if (travelled >= threshold) movePage(-1)
+                    },
+                    onVerticalDrag = { _, dy -> travelled += dy }
+                )
+            }
     ) {
-        content()
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(scrollState, enabled = false),
+            verticalArrangement = Arrangement.spacedBy(spacing),
+            horizontalAlignment = horizontalAlignment
+        ) {
+            content()
+        }
+
+        val maxScroll = scrollState.maxValue
+        val viewportPx = viewportHeight.intValue
+        if (maxScroll > 0 && viewportPx > 0) {
+            val thumbFraction = (viewportPx.toFloat() / (viewportPx + maxScroll)).coerceIn(0.06f, 1f)
+            val positionFraction = (scrollState.value.toFloat() / maxScroll).coerceIn(0f, 1f)
+            val barColor = MaterialTheme.colorScheme.onBackground
+
+            Canvas(
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .fillMaxHeight()
+                    .width(6.dp)
+            ) {
+                val thumbHeight = size.height * thumbFraction
+                val top = (size.height - thumbHeight) * positionFraction
+                drawRect(
+                    color = barColor,
+                    topLeft = Offset(0f, top),
+                    size = Size(size.width, thumbHeight)
+                )
+            }
+        }
     }
 }
 
@@ -652,6 +727,7 @@ fun SettingListLazy(content: LazyListScope.() -> Unit) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
     ) {
         content()
     }
