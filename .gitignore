@@ -9,6 +9,7 @@ crashreporting.properties
 keystore.properties
 key.jks
 *.jks
+.DS_Store
 java/res/raw/mozc.data
 .cxx
 java/src/org/futo/inputmethod/keyboard/internal/KeyboardTextsTable.java
