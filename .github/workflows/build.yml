@@ -61,10 +61,49 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      # The keystore and keystore.properties are gitignored, so they are not on
+      # the runner. Without this step build.gradle silently falls back to the
+      # public AOSP debug key instead of failing.
+      - name: Write signing config
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "KEYSTORE_BASE64 is empty - refusing to produce a debug-signed release" >&2
+            exit 1
+          fi
+          printf '%s' "$KEYSTORE_BASE64" | base64 -d > ci-release.jks
+          {
+            echo "storeFile=ci-release.jks"
+            echo "storePassword=$KEYSTORE_PASSWORD"
+            echo "keyAlias=$KEY_ALIAS"
+            echo "keyPassword=$KEY_PASSWORD"
+          } > keystore.properties
+
       - name: Build release APK
         run: ./gradlew "assemble${FLAVOR^}Release" --stacktrace
         env:
           FLAVOR: ${{ inputs.flavor || 'stable' }}
+
+      # A wrong password or alias does not fail the build - gradle just uses the
+      # debug key - so assert the signer explicitly.
+      - name: Verify signing key
+        run: |
+          APKSIGNER=$(ls "$ANDROID_HOME"/build-tools/*/apksigner | tail -1)
+          APK=$(ls build/outputs/apk/*/release/*.apk | head -1)
+          CERTS=$("$APKSIGNER" verify --print-certs "$APK")
+          echo "$CERTS"
+          if echo "$CERTS" | grep -q "CN=Android, OU=Android, O=Android"; then
+            echo "APK is signed with the AOSP debug key" >&2
+            exit 1
+          fi
+
+      - name: Clean up signing material
+        if: always()
+        run: rm -f ci-release.jks keystore.properties
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
